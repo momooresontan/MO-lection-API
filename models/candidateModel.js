@@ -2,9 +2,18 @@ const mongoose = require("mongoose");
 
 const candidateSchema = new mongoose.Schema(
   {
-    candidateName: {
+    name: {
       type: String,
       required: [true, "Candidate must have a name"],
+    },
+    email: {
+      type: String,
+      required: [true, "Candidate must have an email address"],
+    },
+    party: {
+      type: String,
+      required: [true, "Candidate must belong to a party"],
+      uppercase: true,
     },
     voters: [
       {
