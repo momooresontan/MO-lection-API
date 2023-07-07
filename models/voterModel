@@ -19,12 +19,16 @@ const voterSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Candidate",
     },
+    role: {
+      type: "String",
+      default: "user",
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const User = mongoose.model("Voter", voterSchema);
+const Voter = mongoose.model("Voter", voterSchema);
 
-module.exports = User;
+module.exports = Voter;
