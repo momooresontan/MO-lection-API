@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken')
 const Voter = require("../models/voterModel");
 
 exports.register = asyncHandler(async (req, res) => {
@@ -30,5 +31,20 @@ exports.register = asyncHandler(async (req, res) => {
   } else {
     res.status(400);
     throw new Error("Voter data invalid");
+  }
+});
+
+exports.login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("All fields are mandatory");
+  }
+  const voter = await Voter.findOne({ email });
+
+  //compare password with hashedPassword
+  const passwordCompare = await bcrypt.compare(password, voter.password)
+  if(voter && passwordCompare) {
+    const accessToken = 
   }
 });

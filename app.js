@@ -1,9 +1,11 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const voterRouter = require("./routes/voterRoute");
+const connectDB = require("./config/connectDB");
 
 dotenv.config();
 
+connectDB();
 const app = express();
 
 //Middlewares
