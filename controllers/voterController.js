@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 const Voter = require("../models/voterModel");
 
 exports.register = asyncHandler(async (req, res) => {
@@ -43,8 +43,25 @@ exports.login = asyncHandler(async (req, res) => {
   const voter = await Voter.findOne({ email });
 
   //compare password with hashedPassword
-  const passwordCompare = await bcrypt.compare(password, voter.password)
-  if(voter && passwordCompare) {
-    const accessToken = 
+  const passwordCompare = await bcrypt.compare(password, voter.password);
+  if (voter && passwordCompare) {
+    const accessToken = jwt.sign(
+      {
+        voter: {
+          name: voter.name,
+          email: voter.email,
+          role: voter.role,
+          id: voter.id,
+        },
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN }
+    );
+    res.status(200).json({ accessToken });
+  } else {
+    res.status(401);
+    throw new Error("Email or password invalid");
   }
 });
+
+exports.getMe = asyncHandler(async (req, res) => {});
