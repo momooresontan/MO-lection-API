@@ -64,4 +64,12 @@ exports.login = asyncHandler(async (req, res) => {
   }
 });
 
-exports.getMe = asyncHandler(async (req, res) => {});
+exports.getMe = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const voter = await Voter.findById(id);
+  if (!voter) {
+    res.status(400);
+    throw new Error("Voter not found");
+  }
+  res.status(200).json(voter);
+});

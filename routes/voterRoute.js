@@ -1,5 +1,5 @@
 const express = require("express");
-const { login, register } = require("../controllers/voterController");
+const { getMe, login, register } = require("../controllers/voterController");
 
 const router = express.Router();
 
@@ -7,6 +7,6 @@ router.post("/register", register);
 
 router.post("/login", login);
 
-router.get("/me");
+router.get("/me/:id", getMe);
 
 module.exports = router;
