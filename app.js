@@ -1,7 +1,13 @@
 const express = require("express");
+const dotenv = require("dotenv");
 const voterRouter = require("./routes/voterRoute");
 
+dotenv.config();
+
 const app = express();
+
+//Middlewares
+app.use(express.json());
 
 //Mounting routes
 app.use("/api/v1/voters", voterRouter);

@@ -21,4 +21,14 @@ exports.register = asyncHandler(async (req, res) => {
     password: hashedPassword,
     role,
   });
+  console.log(`Voter created ${voter}`);
+  if (voter) {
+    res.status(201).json({
+      _id: user.id,
+      email: user.email,
+    });
+  } else {
+    res.status(400);
+    throw new Error("User data invalid");
+  }
 });
