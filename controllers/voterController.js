@@ -97,8 +97,8 @@ exports.addVote = asyncHandler(async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     await vote.save({ session });
-    candidate.voters.push(vote);
-    await candidate.save({ session });
+    candidateAvailable.voters.push(vote.voter);
+    await candidateAvailable.save({ session });
     await session.commitTransaction();
   } catch (err) {
     console.log(err);
@@ -109,11 +109,11 @@ exports.addVote = asyncHandler(async (req, res) => {
 exports.removeVote = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const vote = await Vote.findByIdAndRemove(id).populate("candidate");
-  await vote.candidate.voters.pull(vote);
+  await vote.candidate.voters.pull(vote.voter);
   await vote.candidate.save();
   if (!vote) {
     res.status(404);
-    throw new Error("Vote nnot found");
+    throw new Error("Vote not found");
   }
   res.status(204).json({ message: "Vote remove" });
 });
