@@ -105,3 +105,15 @@ exports.addVote = asyncHandler(async (req, res) => {
   }
   res.status(201).json(vote);
 });
+
+exports.removeVote = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const vote = await Vote.findByIdAndRemove(id).populate("candidate");
+  await vote.candidate.voters.pull(vote);
+  await vote.candidate.save();
+  if (!vote) {
+    res.status(404);
+    throw new Error("Vote nnot found");
+  }
+  res.status(204).json({ message: "Vote remove" });
+});
