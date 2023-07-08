@@ -83,7 +83,7 @@ exports.addVote = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("All fields required");
   }
-  const candidateAvailable = await Candidate.findOne({ candidate });
+  const candidateAvailable = await Candidate.findById(candidate);
   if (!candidateAvailable) {
     res.status(500);
     throw new Error("Candidate not found");
