@@ -1,6 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+const Candidate = require("../models/candidateModel");
+const Vote = require("../models/voteModel");
 const Voter = require("../models/voterModel");
 
 exports.register = asyncHandler(async (req, res) => {
@@ -72,4 +75,33 @@ exports.getMe = asyncHandler(async (req, res) => {
     throw new Error("Voter not found");
   }
   res.status(200).json(voter);
+});
+
+exports.addVote = asyncHandler(async (req, res) => {
+  const { voter, candidate } = req.body;
+  if (!voter || !candidate) {
+    res.status(400);
+    throw new Error("All fields required");
+  }
+  const candidateAvailable = await Candidate.findOne({ candidate });
+  if (!candidateAvailable) {
+    res.status(500);
+    throw new Error("Candidate not found");
+  }
+  let vote = new Vote({
+    voter,
+    candidate,
+  });
+
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    await vote.save({ session });
+    candidate.voters.push(vote);
+    await candidate.save({ session });
+    await session.commitTransaction();
+  } catch (err) {
+    console.log(err);
+  }
+  res.status(201).json(vote);
 });
